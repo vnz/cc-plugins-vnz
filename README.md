@@ -26,9 +26,10 @@ Personal Claude Code plugin marketplace by vnz.
 
 ## Usage
 
-After adding the marketplace:
+After adding the marketplace, install any plugin:
 ```bash
 /plugin install date-context@cc-plugins-vnz
+/plugin install terraform-ls@cc-plugins-vnz
 ```
 
 ## Development

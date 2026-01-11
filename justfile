@@ -1,5 +1,10 @@
 # justfile for cc-plugins-vnz
 # Run `just` to see available recipes
+#
+# Hook groups (all via prek):
+#   fmt      → shfmt (modifies files)
+#   lint     → shellcheck, json-validate, script-permissions (read-only)
+#   validate → validate-plugins (structure checks)
 
 set quiet  # Don't echo recipe lines
 
@@ -11,21 +16,23 @@ default:
 setup:
     prek install
 
-# Run all pre-commit hooks
+# Format code (shfmt - modifies files)
+fmt:
+    prek run shfmt --all-files
+
+# Lint code (shellcheck, json, permissions - read-only)
 lint:
-    prek run --all-files
+    prek run shellcheck --all-files
+    prek run json-validate --all-files
+    prek run script-permissions --all-files
 
 # Validate plugin structure (version consistency, required files)
 validate:
-    ./scripts/validate-plugins.sh
+    prek run validate-plugins --all-files
 
-# Format shell scripts with shfmt
-fmt:
-    shfmt -i 2 -ci -w plugins/**/*.sh
+# Run all checks (what CI runs)
+all:
+    prek run --all-files
 
-# Check shell scripts without modifying (lint only)
-check:
-    shellcheck plugins/**/*.sh
-
-# Run all checks (lint + validate)
-all: lint validate
+# Alias: check = lint (for familiarity)
+check: lint

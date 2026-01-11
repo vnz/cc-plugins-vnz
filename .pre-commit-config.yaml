@@ -1,37 +1,51 @@
 # Pre-commit hooks using prek (https://github.com/j178/prek)
-# Install hooks: prek install
-# Run all hooks: prek run --all-files
+#
+# Usage:
+#   prek install           Install git hooks
+#   prek run --all-files   Run all hooks
+#   prek run <id>          Run specific hook
+#
+# Hook groups (for justfile):
+#   fmt      → shfmt
+#   lint     → shellcheck, json-validate, script-permissions
+#   validate → validate-plugins
 
 repos:
-  # Shell linting
+  # ┌─────────────────────────────────────────────────────────────────────────┐
+  # │ FMT - Formatters (modify files)                                         │
+  # └─────────────────────────────────────────────────────────────────────────┘
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.10.0-1
+    hooks:
+      - id: shfmt
+        args: ["-i", "2", "-ci", "-w"]
+
+  # ┌─────────────────────────────────────────────────────────────────────────┐
+  # │ LINT - Linters (read-only checks)                                       │
+  # └─────────────────────────────────────────────────────────────────────────┘
   - repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.11.0
     hooks:
       - id: shellcheck
         args: ["--severity=warning"]
 
-  # Shell formatting (uses system shfmt)
-  - repo: https://github.com/scop/pre-commit-shfmt
-    rev: v3.10.0-1
-    hooks:
-      - id: shfmt
-        args: ["-i", "2", "-ci", "-w"]  # 2-space indent, case indent, write
-
-  # Local hooks
   - repo: local
     hooks:
       - id: json-validate
         name: Validate JSON files
-        entry: "bash -c 'for f in \"$@\"; do jq empty \"$f\" || exit 1; done' _"
+        entry: bash -c 'for f in "$@"; do jq empty "$f" || exit 1; done' _
         language: system
         files: \.json$
 
       - id: script-permissions
         name: Check script permissions
-        entry: "bash -c 'for f in \"$@\"; do test -x \"$f\" || exit 1; done' _"
+        entry: bash -c 'for f in "$@"; do test -x "$f" || exit 1; done' _
         language: system
         files: \.sh$
 
+  # ┌─────────────────────────────────────────────────────────────────────────┐
+  # │ VALIDATE - Structure validation                                         │
+  # └─────────────────────────────────────────────────────────────────────────┘
       - id: validate-plugins
         name: Validate plugin structure
         entry: scripts/validate-plugins.sh

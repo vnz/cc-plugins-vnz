@@ -27,6 +27,24 @@ After adding the marketplace:
 /plugin install date-context@cc-plugins-vnz
 ```
 
+## Development
+
+Requires [just](https://github.com/casey/just) command runner.
+
+```bash
+# Install pre-commit hooks
+just setup
+
+# Run all linters
+just lint
+
+# Format shell scripts
+just fmt
+
+# Run all checks
+just all
+```
+
 ## License
 
 MIT

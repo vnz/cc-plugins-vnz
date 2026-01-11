@@ -34,10 +34,10 @@ brew install hashicorp/tap/terraform-ls
 ## Installation
 
 ```bash
-# Add the marketplace (if not already added)
+# Add marketplace from vnz/cc-plugins (aliased as cc-plugins-vnz)
 /plugin marketplace add vnz/cc-plugins
 
-# Install the plugin
+# Install plugin from the new marketplace
 /plugin install terraform-ls@cc-plugins-vnz
 ```
 
@@ -57,9 +57,9 @@ Enable LSP in your Claude Code settings (`~/.claude/settings.json`):
 Run `/plugin list` and verify the plugin appears. Try reinstalling if needed.
 
 ### LSP not working
-1. Verify `terraform-ls` is in your PATH: `which terraform-ls`
-2. Check that `ENABLE_LSP_TOOL=1` is set in your settings
-3. Restart Claude Code after making changes
+1. Verify terraform-ls is in your PATH: `which terraform-ls`
+2. Check that `ENABLE_LSP_TOOL=1` is set in your settings and restart Claude Code.
+3. Check Claude Code logs for any `terraform-ls` errors.
 
 ## Links
 

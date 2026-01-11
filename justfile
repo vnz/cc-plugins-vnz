@@ -2,11 +2,13 @@
 # Run `just` to see available recipes
 #
 # Hook groups (all via prek):
-#   fmt      → shfmt (modifies files)
+#   fmt      → shfmt, justfmt (modify files)
 #   lint     → shellcheck, json-validate, script-permissions (read-only)
 #   validate → validate-plugins (structure checks)
 
-set quiet  # Don't echo recipe lines
+set quiet := true
+
+# Don't echo recipe lines
 
 # List available recipes
 default:
@@ -16,9 +18,10 @@ default:
 setup:
     prek install
 
-# Format code (shfmt - modifies files)
+# Format code (shfmt, justfmt - modifies files)
 fmt:
     prek run shfmt --all-files
+    prek run justfmt --all-files
 
 # Lint code (shellcheck, json, permissions - read-only)
 lint:

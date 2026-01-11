@@ -6,7 +6,7 @@
 #   prek run <id>          Run specific hook
 #
 # Hook groups (for justfile):
-#   fmt      → shfmt
+#   fmt      → shfmt, justfmt
 #   lint     → shellcheck, json-validate, script-permissions
 #   validate → validate-plugins
 
@@ -18,7 +18,18 @@ repos:
     rev: v3.10.0-1
     hooks:
       - id: shfmt
+        name: Format shell scripts
         args: ["-i", "2", "-ci", "-w"]
+        types: [shell]
+
+  - repo: local
+    hooks:
+      - id: justfmt
+        name: Format justfile
+        entry: just --fmt --unstable
+        language: system
+        files: ^justfile$
+        pass_filenames: false
 
   # ┌─────────────────────────────────────────────────────────────────────────┐
   # │ LINT - Linters (read-only checks)                                       │
@@ -27,21 +38,23 @@ repos:
     rev: v0.11.0
     hooks:
       - id: shellcheck
+        name: Lint shell scripts
         args: ["--severity=warning"]
+        types: [shell]
 
   - repo: local
     hooks:
       - id: json-validate
-        name: Validate JSON files
+        name: Lint JSON files
         entry: bash -c 'for f in "$@"; do jq empty "$f" || exit 1; done' _
         language: system
-        files: \.json$
+        types: [json]
 
       - id: script-permissions
         name: Check script permissions
         entry: bash -c 'for f in "$@"; do test -x "$f" || exit 1; done' _
         language: system
-        files: \.sh$
+        types: [shell]
 
   # ┌─────────────────────────────────────────────────────────────────────────┐
   # │ VALIDATE - Structure validation                                         │

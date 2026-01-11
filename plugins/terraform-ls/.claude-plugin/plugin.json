@@ -1,0 +1,11 @@
+{
+  "name": "terraform-ls",
+  "version": "1.0.0",
+  "description": "Terraform language server (terraform-ls) for code intelligence, go-to-definition, find-references, and hover docs in Terraform files (.tf, .tfvars, .tftest.hcl)",
+  "license": "MIT",
+  "author": {
+    "name": "vnz"
+  },
+  "repository": "https://github.com/vnz/cc-plugins",
+  "keywords": ["terraform", "lsp", "language-server", "infrastructure", "iac", "hashicorp", "hcl"]
+}

@@ -1,0 +1,18 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Validate plugins
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: j178/prek-action@v1  # Installs and runs prek

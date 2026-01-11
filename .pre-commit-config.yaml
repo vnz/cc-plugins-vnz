@@ -1,0 +1,18 @@
+# Pre-commit hooks using prek (https://github.com/j178/prek)
+# Install hooks: prek install
+# Run all hooks: prek run --all-files
+
+repos:
+  - repo: local
+    hooks:
+      - id: json-validate
+        name: Validate JSON files
+        entry: "bash -c 'for f in \"$@\"; do jq empty \"$f\" || exit 1; done' _"
+        language: system
+        files: \.json$
+
+      - id: script-permissions
+        name: Check script permissions
+        entry: "bash -c 'for f in \"$@\"; do test -x \"$f\" || exit 1; done' _"
+        language: system
+        files: \.sh$

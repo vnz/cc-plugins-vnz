@@ -15,6 +15,16 @@
       "author": {
         "name": "vnz"
       }
+    },
+    {
+      "name": "terraform-ls",
+      "description": "Terraform language server (terraform-ls) for code intelligence, go-to-definition, find-references, and hover docs",
+      "version": "1.0.0",
+      "source": "./plugins/terraform-ls",
+      "category": "development",
+      "author": {
+        "name": "vnz"
+      }
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "name": "date-context",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Injects current date/time context at session start to fix web search year issues",
   "author": {
     "name": "vinz"

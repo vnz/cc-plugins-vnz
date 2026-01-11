@@ -9,7 +9,7 @@
     {
       "name": "date-context",
       "description": "Injects current date/time context at session start to fix web search year issues",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "source": "./plugins/date-context",
       "category": "productivity",
       "author": {

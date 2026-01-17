@@ -25,6 +25,16 @@
       "author": {
         "name": "vnz"
       }
+    },
+    {
+      "name": "eclint",
+      "description": "Automatically enforces .editorconfig rules after file edits using eclint (indentation, whitespace, line endings, charset)",
+      "version": "1.0.0",
+      "source": "./plugins/eclint",
+      "category": "development",
+      "author": {
+        "name": "vnz"
+      }
     }
   ]
 }

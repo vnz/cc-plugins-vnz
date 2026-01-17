@@ -1,0 +1,29 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "eclint",
+  "version": "1.0.0",
+  "description": "Automatically enforces .editorconfig rules after Claude Code edits files using eclint",
+  "author": {
+    "name": "vnz"
+  },
+  "license": "MIT",
+  "keywords": ["editorconfig", "eclint", "formatting", "linting", "whitespace", "indentation"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vnz/cc-plugins"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/fix.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

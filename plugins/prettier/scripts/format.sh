@@ -13,26 +13,16 @@ FILE_PATH=$(jq -r '.tool_input.file_path // empty')
 # Exit if file doesn't exist
 [[ ! -f "$FILE_PATH" ]] && exit 0
 
-# Get file extension
-EXT="${FILE_PATH##*.}"
+# Check if Prettier can format this file by checking for an inferred parser.
+# This avoids maintaining a static list of extensions and relies on Prettier's own detection.
+PARSER=$(npx --yes prettier --file-info "$FILE_PATH" 2>/dev/null | jq -r '.inferredParser // "null"') || PARSER="null"
 
-# Supported extensions (Prettier's default parsers)
-case "$EXT" in
-  js | jsx | ts | tsx | mjs | cjs | mts | cts | \
-    json | json5 | jsonc | \
-    css | scss | sass | less | \
-    html | htm | vue | svelte | astro | \
-    md | mdx | markdown | \
-    yaml | yml | \
-    graphql | gql | \
-    xml)
-    # Format the file in-place using prettier
-    # --write modifies in place, --log-level=error reduces noise
-    npx --yes prettier --write --log-level=error "$FILE_PATH" 2>/dev/null || true
-    ;;
-  *)
-    # Unsupported extension, skip silently
-    ;;
-esac
+if [[ "$PARSER" != "null" ]]; then
+  # Format the file in-place using prettier.
+  # --write modifies in place, --log-level=error reduces noise.
+  # We use `|| true` to ensure the hook doesn't fail even if prettier does (e.g. syntax error),
+  # but we allow stderr to pass through to aid in debugging such failures.
+  npx --yes prettier --write --log-level=error "$FILE_PATH" || true
+fi
 
 exit 0

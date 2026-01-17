@@ -17,7 +17,7 @@ Auto-formats files after Claude Code writes or edits them using [Prettier](https
 | CSS                   | `.css`, `.scss`, `.sass`, `.less`                            |
 | HTML/Templates        | `.html`, `.htm`, `.vue`, `.svelte`, `.astro`                 |
 | Markdown              | `.md`, `.mdx`, `.markdown`                                   |
-| Data formats          | `.yaml`, `.yml`, `.graphql`, `.gql`, `.xml`                  |
+| Data formats          | `.yaml`, `.yml`, `.graphql`, `.gql`                          |
 
 ## Prerequisites
 

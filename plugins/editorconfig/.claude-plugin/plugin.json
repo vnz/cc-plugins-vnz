@@ -1,0 +1,34 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "editorconfig",
+  "version": "1.0.0",
+  "description": "Enforces .editorconfig rules after file edits (whitespace only, no code style changes)",
+  "author": {
+    "name": "vnz"
+  },
+  "license": "MIT",
+  "keywords": [
+    "editorconfig",
+    "whitespace",
+    "indentation",
+    "formatting"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vnz/cc-plugins"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/fix.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

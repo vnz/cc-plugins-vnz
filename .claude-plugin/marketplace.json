@@ -25,6 +25,16 @@
       "author": {
         "name": "vnz"
       }
+    },
+    {
+      "name": "editorconfig",
+      "description": "Enforces .editorconfig rules after file edits (whitespace only, no code style changes)",
+      "version": "1.0.0",
+      "source": "./plugins/editorconfig",
+      "category": "development",
+      "author": {
+        "name": "vnz"
+      }
     }
   ]
 }

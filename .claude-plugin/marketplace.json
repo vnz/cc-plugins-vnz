@@ -25,6 +25,16 @@
       "author": {
         "name": "vnz"
       }
+    },
+    {
+      "name": "dependabot",
+      "description": "Check for dependency updates using Dependabot CLI with auto-detection of package managers",
+      "version": "1.0.0",
+      "source": "./plugins/dependabot",
+      "category": "development",
+      "author": {
+        "name": "vnz"
+      }
     }
   ]
 }

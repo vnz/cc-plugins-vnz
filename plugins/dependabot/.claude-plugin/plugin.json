@@ -1,0 +1,11 @@
+{
+  "name": "dependabot",
+  "version": "1.0.0",
+  "description": "Check for dependency updates using Dependabot CLI with auto-detection of package managers",
+  "license": "MIT",
+  "author": {
+    "name": "vnz"
+  },
+  "repository": "https://github.com/vnz/cc-plugins",
+  "keywords": ["dependabot", "dependencies", "security", "updates", "npm", "terraform", "github-actions"]
+}

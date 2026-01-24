@@ -87,7 +87,7 @@ If a specific ecosystem was requested but not detected:
 
 ## 4. Run Dependabot Updates
 
-For each ecosystem to scan, run the Dependabot CLI in local mode:
+For each ecosystem to scan, run the Dependabot CLI:
 
 ```bash
 # Get the repository name dynamically
@@ -99,49 +99,63 @@ Where `<ecosystem>` is the CLI ecosystem value (e.g., `npm_and_yarn`, `terraform
 
 **Run ecosystems serially** (one at a time) to avoid output confusion.
 
-**Parse the output** for:
-- Updated dependencies (look for table rows showing version changes)
-- Security updates (vulnerabilities fixed)
-- "No update needed" messages
+**Understanding the output:**
+- The CLI outputs **JSON lines** (one JSON object per line), NOT human-readable tables
+- The CLI **never modifies files directly** - it only outputs data describing what would change
+- The `--local .` flag means "use local filesystem as source" (not "dry-run")
+- Output can be very large (40KB+) - it may be truncated
 
-## 5. Present Results
+## 5. Parse Results from JSON Output
+
+The CLI outputs multiple JSON objects. Look for `create_pull_request` events to find updates:
+
+```bash
+# Filter for PR creation events (these contain the updates)
+<output> | grep '"type":"create_pull_request"'
+```
+
+Each `create_pull_request` event contains:
+- `dependencies[].name` - Package name
+- `dependencies[].previous-version` - Current version
+- `dependencies[].version` - Available version
+- `pr-title` - Suggested PR title
+- `updated-dependency-files[]` - The actual file changes to apply
+
+If no `create_pull_request` events are found, or only `mark_as_processed` appears, there are no updates.
+
+## 6. Present Results
 
 Summarize findings in a clear format:
 
 ```
 ## Dependabot Scan Results
 
-### npm_and_yarn
+### github_actions
 | Dependency | Current | Available | Type |
 |------------|---------|-----------|------|
-| lodash | 4.17.20 | 4.17.21 | security |
-| express | 4.18.0 | 4.18.2 | update |
+| actions/checkout | v4 | v6 | update |
+| extractions/setup-just | v2 | v3 | update |
 
-### terraform
+### npm_and_yarn
 No updates available.
-
-### github_actions
-| Action | Current | Available | Type |
-|--------|---------|-----------|------|
-| actions/checkout | v3 | v4 | update |
 ```
 
 If no updates are found across all ecosystems:
 > "All dependencies are up-to-date!"
 
-## 6. Offer PR Creation
+## 7. Offer PR Creation
 
 If updates were found, ask the user:
 
 > "Would you like to apply these updates and create a PR?"
 
-**If yes, ask about PR strategy:**
+**If yes, and multiple ecosystems have updates, ask about PR strategy:**
 
 > "How would you like to organize the updates?"
 > 1. **One PR per ecosystem** - Separate PRs for npm, terraform, etc.
 > 2. **Single combined PR** - All updates in one PR
 
-## 7. Apply Updates and Create PR(s)
+## 8. Apply Updates and Create PR(s)
 
 Based on user's choice:
 
@@ -153,16 +167,21 @@ Based on user's choice:
    # or for combined: dependabot/all-updates
    ```
 
-2. **Run dependabot update without --local** to apply changes:
-   ```bash
-   REPO=$(gh repo view --json owner,name --jq '.owner.login + "/" + .name')
-   LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> "$REPO"
-   ```
-   Note: The non-local mode modifies files in place.
+2. **Apply changes manually:**
+   The CLI doesn't modify files - you must apply the changes yourself.
+
+   From the `create_pull_request` JSON events, extract the `updated-dependency-files` array.
+   Each entry contains:
+   - `name` - The file path (e.g., `.github/workflows/ci.yml`)
+   - `content` - The new file content
+   - `directory` - The directory (usually `/`)
+
+   Use the Edit tool to update each file with the new content, or apply targeted edits
+   based on the `dependencies` array showing old → new versions.
 
 3. **Stage and commit changes:**
    ```bash
-   git add -A
+   git add <modified-files>
    git commit -m "chore(deps): update <ecosystem> dependencies
 
    Updated by Dependabot CLI
@@ -178,7 +197,7 @@ Based on user's choice:
    - Dependency updates detected by Dependabot CLI
 
    ## Updates
-   <list updates here>
+   <list updates with old → new versions>
 
    ## Test plan
    - [ ] Verify build passes
@@ -193,7 +212,9 @@ Based on user's choice:
 ## Important Notes
 
 - Always use `gh auth token` for authentication - never ask for tokens directly
-- The `--local .` flag runs in dry-run mode showing what would update
-- Without `--local`, dependabot modifies files directly
+- The CLI **outputs JSON describing changes** - it never modifies files directly
+- The `--local .` flag means "use local directory as repo source" (avoids cloning from GitHub)
+- Without `--local`, the CLI clones from GitHub but still doesn't modify your local files
 - Some ecosystems may require additional configuration (e.g., private registries)
 - If dependabot fails for an ecosystem, report the error and continue with others
+- JSON output can be 40KB+ - grep for `create_pull_request` to find relevant data

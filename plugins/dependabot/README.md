@@ -76,17 +76,16 @@ gh auth login
 
 ## How It Works
 
-The Dependabot CLI runs locally against your repository:
+The Dependabot CLI outputs JSON describing available updates (it never modifies files directly):
 
 ```bash
-# Dry-run mode (check for updates)
 LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> <owner/repo> --local .
-
-# Apply mode (modify files)
-LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> <owner/repo>
 ```
 
-The `--local .` flag runs in dry-run mode, showing what would be updated without making changes.
+- The `--local .` flag means "use local filesystem as source" (avoids cloning from GitHub)
+- Output is JSON lines containing `create_pull_request` events with update details
+- Claude parses the JSON and applies changes using the Edit tool
+- Output can be large (40KB+) - relevant data is in `create_pull_request` events
 
 ## Links
 

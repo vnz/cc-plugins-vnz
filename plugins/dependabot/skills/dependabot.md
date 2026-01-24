@@ -90,7 +90,9 @@ If a specific ecosystem was requested but not detected:
 For each ecosystem to scan, run the Dependabot CLI in local mode:
 
 ```bash
-GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> / --local .
+# Get the repository name dynamically
+REPO=$(gh repo view --json owner,name --jq '.owner.login + "/" + .name')
+GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> "$REPO" --local .
 ```
 
 Where `<ecosystem>` is the CLI ecosystem value (e.g., `npm_and_yarn`, `terraform`, `github_actions`).
@@ -153,7 +155,8 @@ Based on user's choice:
 
 2. **Run dependabot update without --local** to apply changes:
    ```bash
-   GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> /
+   REPO=$(gh repo view --json owner,name --jq '.owner.login + "/" + .name')
+   GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> "$REPO"
    ```
    Note: The non-local mode modifies files in place.
 

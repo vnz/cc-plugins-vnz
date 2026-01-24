@@ -39,14 +39,14 @@ use dependabot for github-actions
 | Terraform | `terraform`, `tf` | `*.tf` |
 | npm/yarn/pnpm | `npm`, `yarn`, `pnpm` | `package.json` |
 | Go | `go`, `golang` | `go.mod` |
-| Python | `python`, `pip`, `pipenv` | `requirements.txt`, `pyproject.toml`, `Pipfile` |
+| Python | `python`, `pip`, `pipenv` | `requirements.txt`, `pyproject.toml`, `Pipfile`, `setup.py` |
 | Ruby | `ruby`, `bundler`, `gems` | `Gemfile` |
 | Rust | `rust`, `cargo` | `Cargo.toml` |
-| Docker | `docker` | `Dockerfile`, `docker-compose.yml` |
+| Docker | `docker` | `Dockerfile`, `*.dockerfile`, `docker-compose.yml` |
 | Maven | `maven`, `java` | `pom.xml` |
 | Gradle | `gradle` | `build.gradle`, `build.gradle.kts` |
 | Composer | `composer`, `php` | `composer.json` |
-| NuGet | `nuget`, `dotnet`, `csharp` | `*.csproj`, `packages.config` |
+| NuGet | `nuget`, `dotnet`, `csharp` | `*.csproj`, `packages.config`, `*.fsproj` |
 | Helm | `helm` | `Chart.yaml` |
 | Pub (Dart) | `dart`, `flutter`, `pub` | `pubspec.yaml` |
 | Swift | `swift` | `Package.swift` |
@@ -80,10 +80,10 @@ The Dependabot CLI runs locally against your repository:
 
 ```bash
 # Dry-run mode (check for updates)
-GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> / --local .
+GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> <owner/repo> --local .
 
 # Apply mode (modify files)
-GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> /
+GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> <owner/repo>
 ```
 
 The `--local .` flag runs in dry-run mode, showing what would be updated without making changes.

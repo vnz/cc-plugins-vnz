@@ -20,6 +20,9 @@ command -v dependabot || echo "NOT_FOUND"
 
 # Check if gh CLI is installed (needed for authentication)
 command -v gh || echo "NOT_FOUND"
+
+# Check if jq is installed (needed for JSON parsing)
+command -v jq || echo "NOT_FOUND"
 ```
 
 **If dependabot CLI is not found:**
@@ -30,6 +33,10 @@ command -v gh || echo "NOT_FOUND"
 **If gh CLI is not found:**
 - Inform the user: "The GitHub CLI (gh) is needed for authentication."
 - Suggest installation via their package manager.
+
+**If jq is not found:**
+- Inform the user: "jq is recommended for robust JSON parsing. The skill will fall back to a less reliable method if it's not available."
+- Suggest installation via their package manager (e.g., `brew install jq`, `apt install jq`).
 
 ## 2. Parse User Intent
 
@@ -76,18 +83,27 @@ Where `<ecosystem>` is the CLI ecosystem value (e.g., `npm_and_yarn`, `terraform
 Filter the output for `create_pull_request` events — these contain the updates:
 
 ```bash
+# Primary method (jq) — robust JSON parsing
+<output> | jq -c 'select(.type == "create_pull_request")'
+
+# Fallback (grep) — if jq unavailable, less reliable
 <output> | grep '"type":"create_pull_request"'
 ```
 
 - ✅ **Updates found:** `create_pull_request` events in output
-- ❌ **No updates:** Only `mark_as_processed` events (grep returns nothing)
+- ❌ **No updates:** Only `mark_as_processed` events (jq/grep returns nothing)
 
 Each `create_pull_request` event contains:
-- `dependencies[].name` - Package name
-- `dependencies[].previous-version` - Current version
-- `dependencies[].version` - Available version
-- `pr-title` - Suggested PR title
-- `updated-dependency-files[]` - The actual file changes to apply
+- `data.dependencies[].name` - Package name
+- `data.dependencies[]["previous-version"]` - Current version
+- `data.dependencies[].version` - Available version
+- `data["pr-title"]` - Suggested PR title
+- `data["updated-dependency-files"][]` - The actual file changes to apply
+
+**Extract dependency summary from an event:**
+```bash
+echo '<event>' | jq -r '.data.dependencies[] | "\(.name): \(.["previous-version"]) → \(.version)"'
+```
 
 ## 6. Present Results
 

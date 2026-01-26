@@ -29,7 +29,7 @@
     {
       "name": "dependabot",
       "description": "Check for dependency updates using Dependabot CLI with auto-detection of package managers",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "source": "./plugins/dependabot",
       "category": "development",
       "author": {

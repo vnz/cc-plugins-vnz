@@ -13,6 +13,20 @@ Personal Claude Code plugin marketplace by vnz.
 4. Validate: `prek run --all-files`
 5. Commit and test: `/plugin install <name>@cc-plugins-vnz`
 
+## Skill Structure (Recommended)
+
+Use the subdirectory format for skills with reference files:
+
+```
+skills/
+└── <skill-name>/
+    ├── SKILL.md              # Main skill (required)
+    └── references/           # Optional reference data
+        └── <topic>.md
+```
+
+This enables progressive disclosure — Claude loads SKILL.md first, then fetches reference files only when needed.
+
 ## Development
 
 ```bash

@@ -146,8 +146,6 @@ Based on user's choice:
    ```
 
 2. **Apply changes manually:**
-   The CLI doesn't modify files - you must apply the changes yourself.
-
    From the `create_pull_request` JSON events, extract the `updated-dependency-files` array.
    Each entry contains:
    - `name` - The file path (e.g., `.github/workflows/ci.yml`)
@@ -190,9 +188,5 @@ Based on user's choice:
 ## Important Notes
 
 - Always use `gh auth token` for authentication - never ask for tokens directly
-- The CLI **outputs JSON describing changes** - it never modifies files directly
-- The `--local .` flag means "use local directory as repo source" (avoids cloning from GitHub)
-- Without `--local`, the CLI clones from GitHub but still doesn't modify your local files
 - Some ecosystems may require additional configuration (e.g., private registries)
 - If dependabot fails for an ecosystem, report the error and continue with others
-- JSON output can be 40KB+ - grep for `create_pull_request` to find relevant data

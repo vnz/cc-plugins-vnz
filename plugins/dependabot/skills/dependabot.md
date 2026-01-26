@@ -92,7 +92,7 @@ For each ecosystem to scan, run the Dependabot CLI:
 ```bash
 # Get the repository name dynamically
 REPO=$(gh repo view --json owner,name --jq '.owner.login + "/" + .name')
-LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> "$REPO" --local .
+LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> "$REPO" --local . 2>&1
 ```
 
 Where `<ecosystem>` is the CLI ecosystem value (e.g., `npm_and_yarn`, `terraform`, `github_actions`).
@@ -102,8 +102,9 @@ Where `<ecosystem>` is the CLI ecosystem value (e.g., `npm_and_yarn`, `terraform
 **Understanding the output:**
 - The CLI outputs **JSON lines** (one JSON object per line), NOT human-readable tables
 - The CLI **never modifies files directly** - it only outputs data describing what would change
-- The `--local .` flag means "use local filesystem as source" (not "dry-run")
+- The `--local .` flag means "use local filesystem as source" — this prevents the CLI from cloning from GitHub and instead uses your working directory (it's NOT a "dry-run" flag)
 - Output can be very large (40KB+) - it may be truncated
+- **Important:** Use `2>&1` to capture both stdout and stderr, as the CLI mixes log messages (stderr) with JSON output (stdout)
 
 ## 5. Parse Results from JSON Output
 
@@ -121,7 +122,11 @@ Each `create_pull_request` event contains:
 - `pr-title` - Suggested PR title
 - `updated-dependency-files[]` - The actual file changes to apply
 
-If no `create_pull_request` events are found, or only `mark_as_processed` appears, there are no updates.
+**Determining if updates exist:**
+- ✅ **Updates found:** One or more `create_pull_request` events in the output
+- ❌ **No updates:** Only `mark_as_processed` events appear (no `create_pull_request`)
+
+This is the definitive way to check — if you grep for `create_pull_request` and get no results, that ecosystem is up-to-date.
 
 ## 6. Present Results
 
@@ -163,6 +168,9 @@ Based on user's choice:
 
 1. **Create a feature branch:**
    ```bash
+   # If branch already exists from a previous run, delete it first:
+   git branch -D dependabot/<ecosystem>-updates 2>/dev/null || true
+
    git checkout -b dependabot/<ecosystem>-updates
    # or for combined: dependabot/all-updates
    ```

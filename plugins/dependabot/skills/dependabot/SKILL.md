@@ -108,3 +108,9 @@ No updates available.
 
 If no updates are found across all ecosystems:
 > "All dependencies are up-to-date!"
+
+## Important Notes
+
+- Always use `gh auth token` for authentication — never ask for tokens directly
+- Some ecosystems may require additional configuration (e.g., private registries)
+- If dependabot fails for an ecosystem, report the error and continue with others
